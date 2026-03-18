@@ -4,17 +4,24 @@ import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import bcrypt from "bcrypt";
 import { redirect } from "next/navigation";
-import { signIn } from "@/auth";
+import { signIn, auth } from "@/auth";
 import { AuthError } from "next-auth";
+import { signOut } from "@/auth";
 
 export async function addTask(formData: FormData) {
+  const session = await auth(); 
+  
+  if (!session?.user?.id) {
+    throw new Error("You must be logged in to add a task");
+  }
+
   const title = formData.get("title") as string;
   if (!title || title.trim() === "") return;
 
   await db.task.create({ 
     data: { 
       title,
-      userId: 1 
+      userId: Number(session.user.id) 
     } 
   });
   
@@ -82,4 +89,8 @@ export async function login(prevState: any, formData: FormData) {
     }
     throw error; 
   }
+}
+
+export async function logOut() {
+  await signOut({ redirectTo: "/login" });
 }
