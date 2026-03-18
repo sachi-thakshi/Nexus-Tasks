@@ -1,10 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  reactCompiler: true,
-  experimental: {
-    serverComponentsExternalPackages: ["@prisma/client"],
-  },
+  serverExternalPackages: ["bcrypt"],
 };
 
 export default nextConfig;

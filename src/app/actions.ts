@@ -4,6 +4,8 @@ import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import bcrypt from "bcrypt";
 import { redirect } from "next/navigation";
+import { signIn } from "@/auth";
+import { AuthError } from "next-auth";
 
 export async function addTask(formData: FormData) {
   const title = formData.get("title") as string;
@@ -46,7 +48,7 @@ export async function signUp(prevState: any, formData: FormData) {
   const password = formData.get("password") as string;
 
   if (!name || !email || !password) {
-    return { error: "සියලුම තොරතුරු ඇතුළත් කරන්න." };
+    return { error: "Enter all information." };
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -56,8 +58,28 @@ export async function signUp(prevState: any, formData: FormData) {
       data: { name, email, password: hashedPassword },
     });
   } catch (error) {
-    return { error: "මෙම Email එක දැනටමත් භාවිතයේ පවතී." };
+    return { error: "This email is already in use." };
   }
 
   redirect("/login");
+}
+
+export async function login(prevState: any, formData: FormData) {
+  try {
+    await signIn("credentials", {
+      email: formData.get("email"),
+      password: formData.get("password"),
+      redirectTo: "/", 
+    });
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case "CredentialsSignin":
+          return { error: "The email address or password is incorrect." };
+        default:
+          return { error: "An error occurred. Please try again." };
+      }
+    }
+    throw error; 
+  }
 }
