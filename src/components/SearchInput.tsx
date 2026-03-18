@@ -24,7 +24,7 @@ export default function SearchInput() {
       placeholder="Search your tasks..."
       defaultValue={searchParams.get("query")?.toString()}
       onChange={(e) => handleSearch(e.target.value)}
-      className="w-full bg-[#f5f4f0] border border-[#e8e5de] rounded-xl px-4 py-2.5 text-[14px] text-[#1a1916] outline-none focus:border-[#1a1916] transition-all placeholder:text-[#b5b2a9]"
+      className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white ..."
     />
   );
 }

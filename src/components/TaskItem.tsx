@@ -46,7 +46,7 @@ export default function TaskItem({ task }: { task: any }) {
         <span
           onClick={() => setIsEditing(true)}
           className={`flex-1 text-[14px] font-medium cursor-pointer ${
-            task.isDone ? "line-through text-[#b5b2a9] font-normal" : "text-[#1a1916]"
+            task.isDone ? "line-through text-[#b5b2a9] font-normal" : "text-slate-900"
           }`}
         >
           {task.title}
