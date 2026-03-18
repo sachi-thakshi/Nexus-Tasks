@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { addTask, logOut } from "./actions";
+import { addTask, logOut, clearCompletedTasks } from "./actions";
 import TaskItem from "@/components/TaskItem";
 import SearchInput from "@/components/SearchInput";
 import ThemeToggle from "@/components/ThemeToggle"; 
@@ -124,9 +124,15 @@ export default async function Home({
           <span className="text-[13px] font-medium text-slate-500 dark:text-slate-400">
             {pending} {pending === 1 ? 'task' : 'tasks'} remaining
           </span>
-          <button className="text-[13px] font-bold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors">
-            Clear completed
-          </button>
+          
+          <form action={clearCompletedTasks}>
+            <button 
+              type="submit"
+              className="text-[13px] font-bold text-blue-600 dark:text-blue-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"
+            >
+              Clear completed
+            </button>
+          </form>
         </div>
       </div>
     </main>

@@ -94,3 +94,19 @@ export async function login(prevState: any, formData: FormData) {
 export async function logOut() {
   await signOut({ redirectTo: "/login" });
 }
+
+export async function clearCompletedTasks() {
+  const session = await auth();
+  const userId = Number(session?.user?.id);
+
+  if (!userId) return;
+
+  await db.task.deleteMany({
+    where: {
+      userId: userId,
+      isDone: true, 
+    },
+  });
+
+  revalidatePath("/");
+}
