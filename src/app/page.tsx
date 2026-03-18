@@ -1,6 +1,8 @@
 import { db } from "@/lib/db";
 import { addTask } from "./actions";
 import TaskItem from "@/components/TaskItem";
+import SearchInput from "@/components/SearchInput"; 
+
 interface Task {
   id: number;
   title: string;
@@ -9,8 +11,20 @@ interface Task {
   userId: number;
 }
 
-export default async function Home() {
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ query?: string }>;
+}) {
+  const params = await searchParams;
+  const query = params.query || "";
+
   const tasks: Task[] = await db.task.findMany({
+    where: {
+      title: {
+        contains: query, 
+      },
+    },
     orderBy: { createdAt: "desc" },
     include: { category: true } 
   });
@@ -25,10 +39,16 @@ export default async function Home() {
 
         {/* Header */}
         <div className="px-7 pt-7 pb-5">
-          <div className="flex items-center justify-between mb-1">
+          <div className="flex items-center justify-between mb-4">
             <h1 className="text-[22px] font-semibold text-[#1a1916] tracking-tight">NexusTasks</h1>
             <span className="w-2 h-2 rounded-full bg-green-400" />
           </div>
+
+          {/* (Search Input) */}
+          <div className="mb-5">
+            <SearchInput />
+          </div>
+          
           <p className="text-[13px] text-[#9e9b93] mb-5">
             {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}
           </p>
@@ -63,7 +83,9 @@ export default async function Home() {
           ))}
 
           {tasks.length === 0 && (
-            <p className="text-center text-[13px] text-[#b5b2a9] py-10">No tasks yet — add one above.</p>
+            <p className="text-center text-[13px] text-[#b5b2a9] py-10">
+              {query ? `No tasks found for "${query}"` : "No tasks yet — add one above."}
+            </p>
           )}
         </div>
 
