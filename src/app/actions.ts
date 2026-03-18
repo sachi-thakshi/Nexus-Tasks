@@ -29,3 +29,11 @@ export async function toggleTask(id: number, currentStatus: boolean) {
   });
   revalidatePath("/");
 }
+
+export async function updateTask(id: number, newTitle: string) {
+  await db.task.update({
+    where: { id },
+    data: { title: newTitle }
+  });
+  revalidatePath("/");
+}
