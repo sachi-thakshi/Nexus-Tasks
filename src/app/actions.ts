@@ -7,7 +7,13 @@ export async function addTask(formData: FormData) {
   const title = formData.get("title") as string;
   if (!title || title.trim() === "") return;
 
-  await db.task.create({ data: { title } });
+  await db.task.create({ 
+    data: { 
+      title,
+      userId: 1 
+    } 
+  });
+  
   revalidatePath("/");
 }
 
